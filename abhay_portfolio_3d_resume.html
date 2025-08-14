@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Abhay Ankush Shinde | 3D Portfolio</title>
+  <meta name="description" content="Abhay Ankush Shinde — Web Developer & IT Engineer. 3D portfolio with HTML, CSS, and JavaScript." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f17;
+      --bg-2: #101826;
+      --text: #e6f0ff;
+      --muted: #93a3b8;
+      --accent: #6ea8ff;
+      --card: rgba(255,255,255,0.06);
+      --glass: rgba(255,255,255,0.08);
+      --border: rgba(255,255,255,0.15);
+      --shadow: 0 20px 60px rgba(0,0,0,0.45);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: radial-gradient(1200px 800px at 70% -10%, #1b2a4b 0%, transparent 60%),
+                  radial-gradient(900px 600px at 0% 100%, #0e2b2b 0%, transparent 60%),
+                  var(--bg);
+      overflow-x: hidden;
+      perspective: 1200px;
+    }
+
+    .wrap { width: min(1100px, 92%); margin: 0 auto; }
+    section { padding: 80px 20px; }
+    h1, h2, h3 { margin: 0 0 10px; }
+    .muted { color: var(--muted); }
+    .badge { padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--glass); font-weight: 600; font-size: 14px; }
+
+    /* Nav */
+    .nav {
+      position: fixed; inset-inline: 0; top: 0; z-index: 50;
+      display: flex; justify-content: center; padding: 16px;
+      pointer-events: none;
+    }
+    .nav-inner {
+      pointer-events: auto; width: min(1100px, 92%);
+      background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 18px; padding: 10px 16px;
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      box-shadow: var(--shadow);
+    }
+    .brand { font-weight: 800; letter-spacing: .3px; }
+    .links { display: flex; gap: 16px; align-items: center; }
+    .links a { color: var(--text); text-decoration: none; opacity: .9; }
+    .links a:hover { opacity: 1; }
+    .cta {
+      padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.06));
+      font-weight: 700; transition: transform 200ms ease;
+    }
+    .cta:hover { transform: translateY(-1px); }
+
+    /* Hero */
+    .hero {
+      position: relative; min-height: 100svh; display: grid; place-items: center;
+      padding: 140px 20px 80px; overflow: hidden;
+    }
+    .layer { position: absolute; inset: -15vh -15vw; transform-style: preserve-3d; pointer-events: none; }
+    .stars, .grid {
+      position: absolute; inset: 0; transform: translateZ(-400px) scale(1.4); opacity: 0.7;
+    }
+    .stars { background-image:
+        radial-gradient(2px 2px at 20% 30%, #cfe4ff, transparent 60%),
+        radial-gradient(1.5px 1.5px at 60% 70%, #a3c9ff, transparent 60%),
+        radial-gradient(1.5px 1.5px at 80% 20%, #c9eaff, transparent 60%),
+        radial-gradient(1.5px 1.5px at 10% 80%, #8fb9ff, transparent 60%);
+    }
+    .grid {
+      background: linear-gradient(transparent 60%, rgba(110,168,255,0.1) 60%),
+                  repeating-linear-gradient(0deg, rgba(255,255,255,0.07) 0 1px, transparent 1px 80px),
+                  repeating-linear-gradient(90deg, rgba(255,255,255,0.07) 0 1px, transparent 1px 80px);
+      transform: rotateX(60deg) translateY(30vh) translateZ(-300px) scale(1.5);
+      mask-image: linear-gradient(to top, transparent, black 40%);
+    }
+    .hero-inner {
+      width: min(1100px, 92%);
+      display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(20px, 5vw, 40px);
+      align-items: center; transform-style: preserve-3d;
+    }
+    @media (max-width: 900px) { .hero-inner { grid-template-columns: 1fr; text-align: center; } }
+
+    .intro {
+      transform: translateZ(60px);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border: 1px solid var(--border); border-radius: 24px; padding: clamp(18px, 3vw, 28px);
+      box-shadow: var(--shadow);
+    }
+    .hello { font-size: clamp(14px, 2vw, 16px); color: var(--muted); letter-spacing: .2em; text-transform: uppercase; }
+    h1 { font-size: clamp(32px, 6vw, 64px); margin: 8px 0 12px; line-height: 1.05; }
+    .lead { color: var(--muted); font-size: clamp(16px, 2.4vw, 20px); }
+    .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+
+    .portrait-wrap { position: relative; transform-style: preserve-3d; }
+    .portrait {
+      height: clamp(240px, 45vh, 420px); border-radius: 28px; overflow: hidden; border: 1px solid var(--border);
+      transform: rotateY(var(--tilt-x, 0deg)) rotateX(var(--tilt-y, 0deg)) translateZ(60px);
+      transition: transform 200ms ease;
+      background: radial-gradient(circle at 70% 20%, rgba(110,168,255,.22), transparent 45%),
+                  url('https://images.unsplash.com/photo-1529472119196-cb724127a98e?q=80&w=1200&auto=format&fit=crop') center/cover no-repeat;
+      box-shadow: 0 80px 120px rgba(15, 25, 45, 0.65);
+    }
+
+    /* Running text */
+    .running-text {
+      position: relative; width: 100%; overflow: hidden; white-space: nowrap; margin-top: 14px;
+    }
+    .running-text span {
+      display: inline-block; padding-right: 100%;
+      animation: runText 18s linear infinite;
+      color: var(--muted); font-weight: 600;
+    }
+    @keyframes runText { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+    /* Projects */
+    .section-title { font-size: clamp(24px, 4vw, 40px); margin: 0 0 24px; }
+    .grid-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; transform-style: preserve-3d; }
+    @media (max-width: 900px) { .grid-cards { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 640px) { .grid-cards { grid-template-columns: 1fr; } }
+    .card {
+      position: relative; background: var(--card); border: 1px solid var(--border); border-radius: 20px; overflow: clip;
+      padding: 18px; min-height: 220px;
+      transform-style: preserve-3d; transform: translateZ(0px) translateY(20px) scale(.98);
+      transition: transform 300ms ease, box-shadow 200ms ease, border-color 200ms ease, opacity 300ms ease;
+      opacity: .6;
+    }
+    .card.in-view {
+      transform: translateZ(20px) translateY(0) scale(1);
+      opacity: 1;
+    }
+    .card:hover { transform: translateZ(40px) rotateX(var(--hover-y, 0deg)) rotateY(var(--hover-x, 0deg)); border-color: rgba(255,255,255,0.35); box-shadow: 0 30px 80px rgba(0,0,0,0.5); }
+    .card .thumb {
+      height: 150px; border-radius: 14px; border: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(110,168,255,0.3), rgba(110,168,255,0.05)),
+                  url('https://images.unsplash.com/photo-1526498460520-4c246339dccb?q=80&w=1200&auto=format&fit=crop') center/cover no-repeat;
+      margin-bottom: 14px; transform: translateZ(24px);
+    }
+    .card h3 { margin: 6px 0; font-size: 18px; }
+    .card p { margin: 0; color: var(--muted); }
+    .card .chip {
+      position: absolute; top: 14px; right: 14px; padding: 6px 10px; border-radius: 999px;
+      background: rgba(110,168,255,0.18); border: 1px solid rgba(110,168,255,0.35);
+      font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      transform: translateZ(40px);
+    }
+    .card a.btn {
+      display: inline-block; margin-top: 12px; padding: 10px 12px; border-radius: 12px; font-weight: 700; text-decoration: none;
+      border: 1px solid var(--border); background: var(--glass); color: var(--text);
+      transform: translateZ(32px);
+    }
+
+    /* About */
+    .about { position: relative; display: grid; grid-template-columns: 1.2fr .8fr; gap: 28px; align-items: center; }
+    @media (max-width: 900px) { .about { grid-template-columns: 1fr; } }
+    .cube-scene { height: 260px; perspective: 800px; }
+    .cube { position: relative; margin: auto; width: 140px; height: 140px; transform-style: preserve-3d; animation: spin 16s linear infinite; }
+    .cube-face { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(110,168,255,0.35), rgba(110,168,255,0.08)); border: 1px solid rgba(255,255,255,0.35); border-radius: 12px; backdrop-filter: blur(2px); }
+    .cube-face:nth-child(1) { transform: translateZ(70px); }
+    .cube-face:nth-child(2) { transform: rotateY(90deg) translateZ(70px); }
+    .cube-face:nth-child(3) { transform: rotateY(180deg) translateZ(70px); }
+    .cube-face:nth-child(4) { transform: rotateY(-90deg) translateZ(70px); }
+    .cube-face:nth-child(5) { transform: rotateX(90deg) translateZ(70px); }
+    .cube-face:nth-child(6) { transform: rotateX(-90deg) translateZ(70px); }
+    @keyframes spin { to { transform: rotateX(360deg) rotateY(360deg); } }
+
+    /* ===== Resume 3D Card ===== */
+    .resume-section { position: relative; }
+    .resume-wrap { display: grid; grid-template-columns: 1fr .9fr; align-items: center; gap: 28px; }
+    @media (max-width: 900px) { .resume-wrap { grid-template-columns: 1fr; } }
+    .resume-card {
+      position: relative;
+      background: radial-gradient(120% 180% at 20% 0%, rgba(110,168,255,.2), rgba(255,255,255,.04));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      transform-style: preserve-3d;
+      transform: translateZ(0) rotateX(var(--rX,0deg)) rotateY(var(--rY,0deg));
+      box-shadow: 0 40px 100px rgba(0,0,0,.55);
+      overflow: hidden;
+      animation: bob 6s ease-in-out infinite;
+      transition: box-shadow 300ms ease, border-color 300ms ease;
+    }
+    @keyframes bob {
+      0%, 100% { transform: translateY(0) rotateX(var(--rX,0deg)) rotateY(var(--rY,0deg)); }
+      50% { transform: translateY(-8px) rotateX(var(--rX,0deg)) rotateY(var(--rY,0deg)); }
+    }
+    .resume-card::before {
+      content: "";
+      position: absolute; inset: -2px;
+      background: conic-gradient(from 0deg, rgba(110,168,255,.0), rgba(110,168,255,.45), rgba(110,168,255,.0) 30%);
+      filter: blur(12px);
+      transform: translateZ(-1px);
+      animation: spinGlow 8s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes spinGlow { to { transform: translateZ(-1px) rotate(360deg); } }
+    .resume-title { font-size: clamp(22px, 4vw, 36px); font-weight: 800; margin-bottom: 6px; }
+    .resume-sub { color: var(--muted); margin-bottom: 16px; }
+    .resume-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-primary {
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08));
+      color: var(--text);
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-weight: 800;
+      text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+      transform: translateZ(24px);
+    }
+    .resume-glow { position: absolute; inset: 0; pointer-events: none; }
+    .resume-canvas { position: absolute; inset: -20%; filter: blur(30px); opacity: .35; transform: translateZ(-2px); }
+
+    /* Contact & Footer */
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+    @media (max-width: 900px) { .contact-grid { grid-template-columns: 1fr; } }
+    form {
+      background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 18px; box-shadow: var(--shadow);
+      transform: translateZ(16px);
+    }
+    label { display: block; font-weight: 600; margin: 10px 0 6px; }
+    input, textarea {
+      width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background: rgba(10, 15, 25, 0.6);
+      color: var(--text); outline: none; font: inherit;
+    }
+    textarea { min-height: 120px; resize: vertical; }
+    button {
+      margin-top: 12px; padding: 12px 16px; font-weight: 700; border-radius: 12px; border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.06)); color: var(--text);
+      cursor: pointer; transition: transform 150ms ease;
+    }
+    button:hover { transform: translateY(-1px); }
+
+    footer { padding: 40px 20px; text-align: center; color: var(--muted); border-top: 1px solid var(--border); background: rgba(255,255,255,0.03); }
+
+    /* Motion reduction */
+    @media (prefers-reduced-motion: reduce) {
+      .cube { animation: none; }
+      .card, .portrait, .resume-card { transition: none; animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Nav -->
+  <nav class="nav" aria-label="Primary">
+    <div class="nav-inner">
+      <div class="brand">Abhay A. Shinde <small>• Portfolio</small></div>
+      <div class="links">
+        <a href="#projects">Projects</a>
+        <a href="#about">About</a>
+        <a href="#resume" class="cta">Resume</a>
+        <a href="#contact" class="cta">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero" id="home">
+    <div class="layer">
+      <div class="stars" aria-hidden="true"></div>
+      <div class="grid" aria-hidden="true"></div>
+    </div>
+
+    <div class="hero-inner">
+      <div class="intro" role="region" aria-label="Introduction">
+        <div class="hello">Hello, I'm</div>
+        <h1>Abhay Ankush Shinde</h1>
+        <p class="lead">Web Developer • IT Engineer — I build responsive, accessible web apps with clean UI and immersive 3D effects.</p>
+        <div class="badges" aria-label="Skills">
+          <span class="badge">HTML</span>
+          <span class="badge">CSS</span>
+          <span class="badge">JavaScript</span>
+          <span class="badge">Java</span>
+          <span class="badge">C++</span>
+          <span class="badge">Python</span>
+          <span class="badge">MySQL</span>
+        </div>
+        <div class="running-text">
+          <span>Welcome to my interactive portfolio • Developed with HTML, CSS, JS ✨ • Let's build something amazing together!</span>
+        </div>
+      </div>
+
+      <div class="portrait-wrap">
+        <div class="portrait" title="Your photo or banner"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Projects -->
+  <section id="projects">
+    <div class="wrap">
+      <h2 class="section-title">Featured Projects</h2>
+      <p class="muted">Hover or tap cards to feel the depth. These are live/code links to my work.</p>
+
+      <div class="grid-cards">
+        <article class="card" tabindex="0">
+          <span class="chip">Live</span>
+          <div class="thumb"></div>
+          <h3>Advanced Calculator</h3>
+          <p>Advanced Calculator Web App with keyboard support. Built with HTML, CSS, JavaScript. Includes AC and delete features.</p>
+          <a class="btn" href="https://github.com/AbhayShinde422/Advanced-Calculator.git" target="_blank" rel="noopener">View on GitHub</a>
+        </article>
+
+        <article class="card" tabindex="0">
+          <span class="chip">Code</span>
+          <div class="thumb" style="background-image: linear-gradient(135deg, rgba(110,168,255,0.3), rgba(110,168,255,0.05)), url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1200&auto=format&fit=crop')"></div>
+          <h3>Landing Page for Secure Internet</h3>
+          <p>Responsive landing page that highlights services and benefits of the Internet. Built with HTML and CSS.</p>
+          <a class="btn" href="https://github.com/AbhayShinde422/Landing-Page.git" target="_blank" rel="noopener">View on GitHub</a>
+        </article>
+
+        <article class="card" tabindex="0">
+          <span class="chip">Case</span>
+          <div class="thumb" style="background-image: linear-gradient(135deg, rgba(110,168,255,0.3), rgba(110,168,255,0.05)), url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200&auto=format&fit=crop')"></div>
+          <h3>Portfolio V1</h3>
+          <p>First personal site — refined typography and motion best practices. (Update this with your next project!)</p>
+          <a class="btn" href="#" onclick="alert('Coming soon!'); return false;">Coming Soon</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about">
+    <div class="wrap about">
+      <div>
+        <h2 class="section-title">About Me</h2>
+        <p class="muted">My name is Abhay Ankush Shinde. I am an IT Engineer, a full‑stack web developer and software engineer currently pursuing a Masters in Computer Application.</p>
+        <ul class="muted">
+          <li>Languages: HTML, Java, CSS, C++, Python</li>
+          <li>Web: HTML, CSS, JavaScript</li>
+          <li>Database: MySQL</li>
+          <li>OS: Windows, Linux (Basics)</li>
+          <li>Software: XAMPP, Visual Studio</li>
+        </ul>
+      </div>
+      <div class="cube-scene" aria-hidden="true">
+        <div class="cube">
+          <div class="cube-face"></div>
+          <div class="cube-face"></div>
+          <div class="cube-face"></div>
+          <div class="cube-face"></div>
+          <div class="cube-face"></div>
+          <div class="cube-face"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Resume 3D Card -->
+  <section id="resume" class="resume-section">
+    <div class="wrap resume-wrap">
+      <div>
+        <h2 class="section-title">Resume</h2>
+        <p class="muted">Clean, minimal preview with a 3D animated card. Click the button to view or download.</p>
+      </div>
+      <div class="resume-card" id="resumeCard" aria-label="3D Resume Card" tabindex="0">
+        <canvas class="resume-canvas" id="resumeGlow" width="800" height="600" aria-hidden="true"></canvas>
+        <div style="transform: translateZ(30px)">
+          <div class="resume-title">Abhay Ankush Shinde</div>
+          <div class="resume-sub">Web Developer • IT Engineer</div>
+          <div class="resume-actions">
+            <a class="btn-primary" href="AbhayShinde.CV.pdf" target="_blank" rel="noopener">View Resume</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <div class="wrap contact-grid">
+      <div>
+        <h2 class="section-title">Contact</h2>
+        <p class="muted">Want to build something together? Drop a message—I'll get back soon.</p>
+        <form onsubmit="event.preventDefault(); alert('Thanks! Your message was captured (demo).');">
+          <label for="name">Name</label>
+          <input id="name" name="name" placeholder="Your name" required />
+          <label for="email">Email</label>
+          <input id="email" type="email" name="email" placeholder="you@example.com" required />
+          <label for="message">Message</label>
+          <textarea id="message" name="message" placeholder="Tell me about your project..."></textarea>
+          <button type="submit">Send Message</button>
+        </form>
+      </div>
+      <aside aria-label="Contact Info" style="transform: translateZ(10px);">
+        <div class="intro">
+          <h3>Reach me</h3>
+          <p class="muted">
+            Email: <a href="mailto:abhayshinde1892@gmail.com" style="color:var(--text)">abhayshinde1892@gmail.com</a><br />
+            LinkedIn: <a href="https://linkedin.com/in/abhay-shinde-2b9899331" target="_blank" style="color:var(--text)">linkedin.com/in/abhay-shinde</a><br />
+            GitHub: <a href="https://github.com/AbhayShinde422" target="_blank" style="color:var(--text)">github.com/AbhayShinde422</a>
+          </p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <footer>
+    © <span id="year"></span> Abhay Ankush Shinde. Built with semantic HTML, modern CSS, and vanilla JS.
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Tilt for portrait
+    const portrait = document.querySelector('.portrait');
+    const hero = document.querySelector('.hero');
+    function handleTilt(e) {
+      const rect = hero.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = (e.clientX - cx) / (rect.width / 2);
+      const dy = (e.clientY - cy) / (rect.height / 2);
+      const maxTilt = 12;
+      const tiltX = maxTilt * dx;
+      const tiltY = -maxTilt * dy;
+      portrait.style.setProperty('--tilt-x', tiltX.toFixed(2) + 'deg');
+      portrait.style.setProperty('--tilt-y', tiltY.toFixed(2) + 'deg');
+    }
+    hero.addEventListener('pointermove', handleTilt);
+    hero.addEventListener('pointerleave', () => {
+      portrait.style.setProperty('--tilt-x', '0deg');
+      portrait.style.setProperty('--tilt-y', '0deg');
+    });
+
+    // 3D hover for project cards + in-view animation
+    const cards = document.querySelectorAll('.card');
+    const tiltCard = (card, e) => {
+      const r = card.getBoundingClientRect();
+      const x = e.clientX - r.left; const y = e.clientY - r.top;
+      const rx = ((y / r.height) - 0.5) * -12;
+      const ry = ((x / r.width) - 0.5) * 12;
+      card.style.setProperty('--hover-x', ry.toFixed(2) + 'deg');
+      card.style.setProperty('--hover-y', rx.toFixed(2) + 'deg');
+    };
+    cards.forEach(card => {
+      card.addEventListener('pointermove', (e) => tiltCard(card, e));
+      card.addEventListener('pointerleave', () => {
+        card.style.removeProperty('--hover-x');
+        card.style.removeProperty('--hover-y');
+      });
+    });
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => entry.target.classList.toggle('in-view', entry.isIntersecting));
+    }, { threshold: 0.2 });
+    cards.forEach(card => io.observe(card));
+
+    // Parallax on scroll
+    const stars = document.querySelector('.stars');
+    const grid = document.querySelector('.grid');
+    const onScroll = () => {
+      const y = window.scrollY;
+      stars.style.transform = `translateY(${y * -0.02}px) translateZ(-400px) scale(1.4)`;
+      grid.style.transform = `rotateX(60deg) translateY(${30 + y * 0.06}vh) translateZ(-300px) scale(1.5)`;
+    };
+    document.addEventListener('scroll', onScroll, { passive: true });
+
+    // Resume card tilt + glow particles
+    const resumeCard = document.getElementById('resumeCard');
+    const glow = document.getElementById('resumeGlow');
+    const gctx = glow.getContext('2d');
+    function drawGlow() {
+      const w = glow.width, h = glow.height;
+      gctx.clearRect(0,0,w,h);
+      for (let i = 0; i < 60; i++) {
+        const x = Math.random() * w;
+        const y = Math.random() * h;
+        const r = Math.random() * 3 + 1;
+        const a = Math.random() * 0.35 + 0.05;
+        gctx.beginPath();
+        gctx.arc(x, y, r, 0, Math.PI*2);
+        gctx.fillStyle = `rgba(110,168,255, ${a})`;
+        gctx.fill();
+      }
+      requestAnimationFrame(drawGlow);
+    }
+    drawGlow();
+
+    function resumeTilt(e) {
+      const r = resumeCard.getBoundingClientRect();
+      const x = (e.clientX - (r.left + r.width/2)) / (r.width/2);
+      const y = (e.clientY - (r.top + r.height/2)) / (r.height/2);
+      resumeCard.style.setProperty('--rY', (x*10).toFixed(2)+'deg');
+      resumeCard.style.setProperty('--rX', (-y*10).toFixed(2)+'deg');
+    }
+    ['pointermove','touchmove'].forEach(evt => resumeCard.addEventListener(evt, (e)=>{
+      const p = e.touches ? e.touches[0] : e;
+      resumeTilt(p);
+    }));
+    resumeCard.addEventListener('pointerleave', ()=>{
+      resumeCard.style.setProperty('--rY','0deg');
+      resumeCard.style.setProperty('--rX','0deg');
+    });
+
+    // Reduced motion
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    function handleMotionPref(e) {
+      if (e.matches) {
+        hero.removeEventListener('pointermove', handleTilt);
+        document.removeEventListener('scroll', onScroll);
+      }
+    }
+    mq.addEventListener('change', handleMotionPref);
+    handleMotionPref(mq);
+  </script>
+</body>
+</html>
